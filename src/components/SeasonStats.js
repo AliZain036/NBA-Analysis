@@ -16,7 +16,7 @@ const SeasonStats = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://localhost:8080/schedules/${seasonYear}`
+        `https://nba-analysis-liard.vercel.app/schedules/${seasonYear}`
       );
       const sortedData = res.data.reverse();
       let tenGamesData = [];
@@ -31,52 +31,52 @@ const SeasonStats = () => {
       getPlayerGameStatsByDate(date);
       if (tenGamesData) {
         const firstGameUrl = fetch(
-          `http://localhost:8080/PlayerGameStatsByDate/${moment(
+          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
             tenGamesData[0]?.Day
           ).format("YYYY-MMM-DD")}`
         );
         const secondGameUrl = fetch(
-          `http://localhost:8080/PlayerGameStatsByDate/${moment(
+          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
             tenGamesData[1]?.Day
           ).format("YYYY-MMM-DD")}`
         );
         const thirdGameUrl = fetch(
-          `http://localhost:8080/PlayerGameStatsByDate/${moment(
+          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
             tenGamesData[2]?.Day
           ).format("YYYY-MMM-DD")}`
         );
         const fourthGameUrl = fetch(
-          `http://localhost:8080/PlayerGameStatsByDate/${moment(
+          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
             tenGamesData[3]?.Day
           ).format("YYYY-MMM-DD")}`
         );
         const fifthGameUrl = fetch(
-          `http://localhost:8080/PlayerGameStatsByDate/${moment(
+          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
             tenGamesData[4]?.Day
           ).format("YYYY-MMM-DD")}`
         );
         const sixthGameUrl = fetch(
-          `http://localhost:8080/PlayerGameStatsByDate/${moment(
+          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
             tenGamesData[5]?.Day
           ).format("YYYY-MMM-DD")}`
         );
         const seventhGameUrl = fetch(
-          `http://localhost:8080/PlayerGameStatsByDate/${moment(
+          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
             tenGamesData[6]?.Day
           ).format("YYYY-MMM-DD")}`
         );
         const eighthGameUrl = fetch(
-          `http://localhost:8080/PlayerGameStatsByDate/${moment(
+          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
             tenGamesData[7]?.Day
           ).format("YYYY-MMM-DD")}`
         );
         const ninthGameUrl = fetch(
-          `http://localhost:8080/PlayerGameStatsByDate/${moment(
+          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
             tenGamesData[8]?.Day
           ).format("YYYY-MMM-DD")}`
         );
         const tenthGameUrl = fetch(
-          `http://localhost:8080/PlayerGameStatsByDate/${moment(
+          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
             tenGamesData[9]?.Day
           ).format("YYYY-MMM-DD")}`
         );
@@ -171,7 +171,7 @@ const SeasonStats = () => {
   const getPlayerGameStatsByDate = async (date) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/PlayerGameStatsByDate/${date}`
+        `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${date}`
       );
       console.log("playerGameStatsByDate:  ", response.data);
       // setPlayerSeasonStats(response.data);
@@ -196,7 +196,7 @@ const SeasonStats = () => {
 
   const fetchCurrentSeasonDetails = async () => {
     try {
-      const response = await axios.get("http://localhost:8080");
+      const response = await axios.get("https://nba-analysis-liard.vercel.app");
     } catch (error) {
       alert(error);
     }
@@ -206,7 +206,7 @@ const SeasonStats = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:8080/PlayerSeasonStats/${seasonYear}`
+        `https://nba-analysis-liard.vercel.app/PlayerSeasonStats/${seasonYear}`
       );
       // setPlayerSeasonStats(response.data)
       // calculateMode(response.data, 'Points')
