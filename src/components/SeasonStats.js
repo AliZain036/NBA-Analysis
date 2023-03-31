@@ -14,72 +14,72 @@ const SeasonStats = () => {
 
   const getSchedules = async () => {
     try {
-      setLoading(true);
+      setLoading(true)
       const res = await axios.get(
-        `https://nba-analysis-liard.vercel.app/schedules/${seasonYear}`
-      );
-      const sortedData = res.data.reverse();
-      let tenGamesData = [];
+        `http://13.53.171.179:8080/schedules/${seasonYear}`
+      )
+      const sortedData = res.data.reverse()
+      let tenGamesData = []
       sortedData?.map((game, index) => {
         if (game.Status === "Final") {
           if (tenGamesData?.length < 10) {
-            tenGamesData.push(game);
+            tenGamesData.push(game)
           }
         }
-      });
-      let date = moment(tenGamesData[9]?.Day).format("YYYY-MMM-DD");
-      getPlayerGameStatsByDate(date);
+      })
+      let date = moment(tenGamesData[9]?.Day).format("YYYY-MMM-DD")
+      getPlayerGameStatsByDate(date)
       if (tenGamesData) {
         const firstGameUrl = fetch(
-          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
+          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[0]?.Day
           ).format("YYYY-MMM-DD")}`
-        );
+        )
         const secondGameUrl = fetch(
-          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
+          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[1]?.Day
           ).format("YYYY-MMM-DD")}`
-        );
+        )
         const thirdGameUrl = fetch(
-          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
+          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[2]?.Day
           ).format("YYYY-MMM-DD")}`
-        );
+        )
         const fourthGameUrl = fetch(
-          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
+          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[3]?.Day
           ).format("YYYY-MMM-DD")}`
-        );
+        )
         const fifthGameUrl = fetch(
-          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
+          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[4]?.Day
           ).format("YYYY-MMM-DD")}`
-        );
+        )
         const sixthGameUrl = fetch(
-          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
+          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[5]?.Day
           ).format("YYYY-MMM-DD")}`
-        );
+        )
         const seventhGameUrl = fetch(
-          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
+          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[6]?.Day
           ).format("YYYY-MMM-DD")}`
-        );
+        )
         const eighthGameUrl = fetch(
-          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
+          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[7]?.Day
           ).format("YYYY-MMM-DD")}`
-        );
+        )
         const ninthGameUrl = fetch(
-          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
+          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[8]?.Day
           ).format("YYYY-MMM-DD")}`
-        );
+        )
         const tenthGameUrl = fetch(
-          `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${moment(
+          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[9]?.Day
           ).format("YYYY-MMM-DD")}`
-        );
+        )
         let response = await Promise.all([
           (await firstGameUrl).json(),
           (await secondGameUrl).json(),
@@ -91,43 +91,41 @@ const SeasonStats = () => {
           (await eighthGameUrl).json(),
           (await ninthGameUrl).json(),
           (await tenthGameUrl).json(),
-        ]);
-        console.log({ response });
-        setLastTenGamesData(response);
-        calculateAvg(response);
+        ])
+        console.log({ response })
+        setLastTenGamesData(response)
+        calculateAvg(response)
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
-  const [playerSeasonStats, setPlayerSeasonStats] = useState([]);
+  }
+  const [playerSeasonStats, setPlayerSeasonStats] = useState([])
 
   const calculateAvg = async (gamesData) => {
-    const temp = [];
+    const temp = []
     gamesData.forEach((arr, ind) => {
       arr.forEach((item, index) => {
         const itemIndex = temp.findIndex(
           (el) => el["PlayerID"] === item["PlayerID"]
-        );
+        )
         if (itemIndex === -1) {
-          temp.push(item);
+          temp.push(item)
         } else {
-          temp[itemIndex]["Points"] =
-            temp[itemIndex]["Points"] + item["Points"];
+          temp[itemIndex]["Points"] = temp[itemIndex]["Points"] + item["Points"]
           temp[itemIndex]["ThreePointersMade"] =
-            temp[itemIndex]["ThreePointersMade"] + item["ThreePointersMade"];
+            temp[itemIndex]["ThreePointersMade"] + item["ThreePointersMade"]
           temp[itemIndex]["FreeThrowsMade"] =
-            temp[itemIndex]["FreeThrowsMade"] + item["FreeThrowsMade"];
+            temp[itemIndex]["FreeThrowsMade"] + item["FreeThrowsMade"]
           temp[itemIndex]["Assists"] =
-            temp[itemIndex]["Assists"] + item["Assists"];
+            temp[itemIndex]["Assists"] + item["Assists"]
           temp[itemIndex]["Rebounds"] =
-            temp[itemIndex]["Rebounds"] + item["Rebounds"];
+            temp[itemIndex]["Rebounds"] + item["Rebounds"]
           temp[itemIndex]["PersonalFouls"] =
-            temp[itemIndex]["PersonalFouls"] + item["PersonalFouls"];
+            temp[itemIndex]["PersonalFouls"] + item["PersonalFouls"]
           temp[itemIndex]["BlockedShots"] =
-            temp[itemIndex]["BlockedShots"] + item["BlockedShots"];
-          temp[itemIndex]["Steals"] =
-            temp[itemIndex]["Steals"] + item["Steals"];
+            temp[itemIndex]["BlockedShots"] + item["BlockedShots"]
+          temp[itemIndex]["Steals"] = temp[itemIndex]["Steals"] + item["Steals"]
         }
         // const itemToUpdate = temp[index];
         // const itemToAdd = arr.find((obj) => obj.Name === itemToUpdate.Name);
@@ -138,22 +136,22 @@ const SeasonStats = () => {
         // }
         // temp[index].Points += arr[ind][index]?.Points
         // console.log(temp[index].Points += arr[ind][index]?.Points);
-      });
-    });
-    console.log({ temp });
+      })
+    })
+    console.log({ temp })
     temp.forEach((item) => {
-      item["Points"] = item["Points"] / gamesData.length;
-      item["ThreePointersMade"] = item["ThreePointersMade"] / gamesData.length;
-      item["FreeThrowsMade"] = item["FreeThrowsMade"] / gamesData.length;
-      item["Assists"] = item["Assists"] / gamesData.length;
-      item["Rebounds"] = item["Rebounds"] / gamesData.length;
-      item["PersonalFouls"] = item["PersonalFouls"] / gamesData.length;
-      item["BlockedShots"] = item["BlockedShots"] / gamesData.length;
-      item["Steals"] = item["Steals"] / gamesData.length;
-    });
-    console.log("after finding average   ", { temp });
-    setPlayerSeasonStats(temp);
-    setLoading(false);
+      item["Points"] = item["Points"] / gamesData.length
+      item["ThreePointersMade"] = item["ThreePointersMade"] / gamesData.length
+      item["FreeThrowsMade"] = item["FreeThrowsMade"] / gamesData.length
+      item["Assists"] = item["Assists"] / gamesData.length
+      item["Rebounds"] = item["Rebounds"] / gamesData.length
+      item["PersonalFouls"] = item["PersonalFouls"] / gamesData.length
+      item["BlockedShots"] = item["BlockedShots"] / gamesData.length
+      item["Steals"] = item["Steals"] / gamesData.length
+    })
+    console.log("after finding average   ", { temp })
+    setPlayerSeasonStats(temp)
+    setLoading(false)
     // const players = gamesData.reduce((acc, game) => {
     //   game.forEach((player) => {
     //     const index = acc.findIndex((p) => p.name === player.name)
@@ -166,21 +164,21 @@ const SeasonStats = () => {
     //   })
     //   return acc
     // }, [])
-  };
+  }
 
   const getPlayerGameStatsByDate = async (date) => {
     try {
       const response = await axios.get(
-        `https://nba-analysis-liard.vercel.app/PlayerGameStatsByDate/${date}`
-      );
-      console.log("playerGameStatsByDate:  ", response.data);
+        `http://13.53.171.179:8080/PlayerGameStatsByDate/${date}`
+      )
+      console.log("playerGameStatsByDate:  ", response.data)
       // setPlayerSeasonStats(response.data);
     } catch (error) {
-      console.error(error);
+      console.error(error)
     } finally {
       // setLoading(false);
     }
-  };
+  }
 
   const [loading, setLoading] = useState(false);
 
@@ -196,28 +194,28 @@ const SeasonStats = () => {
 
   const fetchCurrentSeasonDetails = async () => {
     try {
-      const response = await axios.get("https://nba-analysis-liard.vercel.app");
+      const response = await axios.get("http://13.53.171.179:8080")
     } catch (error) {
-      alert(error);
+      alert(error)
     }
-  };
+  }
 
   const fetchPlayerSeasonDetails = async () => {
     try {
-      setLoading(true);
+      setLoading(true)
       const response = await axios.get(
-        `https://nba-analysis-liard.vercel.app/PlayerSeasonStats/${seasonYear}`
-      );
+        `http://13.53.171.179:8080/PlayerSeasonStats/${seasonYear}`
+      )
       // setPlayerSeasonStats(response.data)
       // calculateMode(response.data, 'Points')
       // calculateMode(response.data, 'Assists')
       // calculateMode(response.data, 'Rebounds')
     } catch (error) {
-      alert(error);
+      alert(error)
     } finally {
       // setLoading(false)
     }
-  };
+  }
 
   const calculateMode = (arr, key) => {
     let frequency = {};
