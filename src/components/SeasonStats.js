@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { Input, Button, Spin, Table } from "antd";
-import axios from "redaxios";
-import moment from "moment";
+import React, { useEffect, useState } from "react"
+import { Input, Button, Spin, Table } from "antd"
+import axios from "redaxios"
+import moment from "moment"
 
 const SeasonStats = () => {
   useEffect(() => {
     // fetchCurrentSeasonDetails()
     // fetchPlayerSeasonDetails()
-    getSchedules();
-  }, []);
+    getSchedules()
+  }, [])
 
-  const [lastTenGamesData, setLastTenGamesData] = useState([]);
+  const [lastTenGamesData, setLastTenGamesData] = useState([])
 
   const getSchedules = async () => {
     try {
       setLoading(true)
       const res = await axios.get(
-        `http://13.53.171.179:8080/schedules/${seasonYear}`
+        `http://13.53.171.179:8080/schedules/${seasonYear}`,
+        { headers: { Origin: "https://nba-analysis-swart.vercel.app" } }
       )
       const sortedData = res.data.reverse()
       let tenGamesData = []
@@ -31,52 +32,52 @@ const SeasonStats = () => {
       getPlayerGameStatsByDate(date)
       if (tenGamesData) {
         const firstGameUrl = fetch(
-          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
+          `http://localhost:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[0]?.Day
           ).format("YYYY-MMM-DD")}`
         )
         const secondGameUrl = fetch(
-          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
+          `http://localhost:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[1]?.Day
           ).format("YYYY-MMM-DD")}`
         )
         const thirdGameUrl = fetch(
-          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
+          `http://localhost:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[2]?.Day
           ).format("YYYY-MMM-DD")}`
         )
         const fourthGameUrl = fetch(
-          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
+          `http://localhost:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[3]?.Day
           ).format("YYYY-MMM-DD")}`
         )
         const fifthGameUrl = fetch(
-          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
+          `http://localhost:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[4]?.Day
           ).format("YYYY-MMM-DD")}`
         )
         const sixthGameUrl = fetch(
-          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
+          `http://localhost:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[5]?.Day
           ).format("YYYY-MMM-DD")}`
         )
         const seventhGameUrl = fetch(
-          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
+          `http://localhost:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[6]?.Day
           ).format("YYYY-MMM-DD")}`
         )
         const eighthGameUrl = fetch(
-          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
+          `http://localhost:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[7]?.Day
           ).format("YYYY-MMM-DD")}`
         )
         const ninthGameUrl = fetch(
-          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
+          `http://localhost:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[8]?.Day
           ).format("YYYY-MMM-DD")}`
         )
         const tenthGameUrl = fetch(
-          `http://13.53.171.179:8080/PlayerGameStatsByDate/${moment(
+          `http://localhost:8080/PlayerGameStatsByDate/${moment(
             tenGamesData[9]?.Day
           ).format("YYYY-MMM-DD")}`
         )
@@ -169,7 +170,7 @@ const SeasonStats = () => {
   const getPlayerGameStatsByDate = async (date) => {
     try {
       const response = await axios.get(
-        `http://13.53.171.179:8080/PlayerGameStatsByDate/${date}`
+        `http://localhost:8080/PlayerGameStatsByDate/${date}`
       )
       console.log("playerGameStatsByDate:  ", response.data)
       // setPlayerSeasonStats(response.data);
@@ -180,21 +181,21 @@ const SeasonStats = () => {
     }
   }
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
-  const [seasonYear, setSeasonYear] = useState(new Date().getFullYear());
+  const [seasonYear, setSeasonYear] = useState(new Date().getFullYear())
   const [seasonStats, setSeasonStats] = useState({
     average: 0,
     mode: [{ Points: 0 }],
     median: 0,
-  });
+  })
   const [seasonMode, setSeasonMode] = useState({
     Points: 0,
-  });
+  })
 
   const fetchCurrentSeasonDetails = async () => {
     try {
-      const response = await axios.get("http://13.53.171.179:8080")
+      const response = await axios.get("http://localhost:8080")
     } catch (error) {
       alert(error)
     }
@@ -204,7 +205,7 @@ const SeasonStats = () => {
     try {
       setLoading(true)
       const response = await axios.get(
-        `http://13.53.171.179:8080/PlayerSeasonStats/${seasonYear}`
+        `http://localhost:8080/PlayerSeasonStats/${seasonYear}`
       )
       // setPlayerSeasonStats(response.data)
       // calculateMode(response.data, 'Points')
@@ -218,22 +219,22 @@ const SeasonStats = () => {
   }
 
   const calculateMode = (arr, key) => {
-    let frequency = {};
-    let maxFreq = 0;
-    let mode;
+    let frequency = {}
+    let maxFreq = 0
+    let mode
 
     arr.forEach((obj) => {
-      let val = obj[key];
-      frequency[val] = frequency[val] || 0;
-      frequency[val]++;
+      let val = obj[key]
+      frequency[val] = frequency[val] || 0
+      frequency[val]++
       if (frequency[val] > maxFreq) {
-        maxFreq = frequency[val];
-        mode = val;
+        maxFreq = frequency[val]
+        mode = val
       }
-    });
-    setSeasonMode((prev) => ({ ...prev, [key]: mode }));
-    return mode;
-  };
+    })
+    setSeasonMode((prev) => ({ ...prev, [key]: mode }))
+    return mode
+  }
 
   const playerSeasonStatsTableColumn = [
     {
@@ -304,7 +305,7 @@ const SeasonStats = () => {
       dataIndex: "Steals",
       key: "Steals",
     },
-  ];
+  ]
 
   return (
     <Spin spinning={loading}>
@@ -335,7 +336,7 @@ const SeasonStats = () => {
         </div>
       </div>
     </Spin>
-  );
-};
+  )
+}
 
-export default SeasonStats;
+export default SeasonStats
