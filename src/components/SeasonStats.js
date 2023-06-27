@@ -1033,7 +1033,7 @@ const SeasonStats = () => {
               loading={loading}
             />
           </Collapse.Panel> */}
-          <Collapse.Panel header="Season Top Ranked Players by Points" key="41">
+          <Collapse.Panel header="Season Worst Ranked Players by Points" key="41">
             <Table
               columns={playerSeasonStatsTableColumn}
               dataSource={[...seasonAverage]
@@ -1043,7 +1043,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Top Ranked Players by ThreePointersMade"
+            header="Season Worst Ranked Players by ThreePointersMade"
             key="42"
           >
             <Table
@@ -1055,7 +1055,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Top Ranked Players by FreeThrowsMade"
+            header="Season Worst Ranked Players by FreeThrowsMade"
             key="43"
           >
             <Table
@@ -1067,7 +1067,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Top Ranked Players by Assists"
+            header="Season Worst Ranked Players by Assists"
             key="44"
           >
             <Table
@@ -1079,7 +1079,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Top Ranked Players by Rebounds"
+            header="Season Worst Ranked Players by Rebounds"
             key="45"
           >
             <Table
@@ -1091,7 +1091,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Top Ranked Players by PersonalFouls"
+            header="Season Worst Ranked Players by PersonalFouls"
             key="46"
           >
             <Table
@@ -1103,7 +1103,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Top Ranked Players by Blocked Shots"
+            header="Season Worst Ranked Players by Blocked Shots"
             key="47"
           >
             <Table
@@ -1114,7 +1114,7 @@ const SeasonStats = () => {
               loading={loading}
             />
           </Collapse.Panel>
-          <Collapse.Panel header="Season Top Ranked Players by Steals" key="48">
+          <Collapse.Panel header="Season Worst Ranked Players by Steals" key="48">
             <Table
               columns={playerSeasonStatsTableColumn}
               dataSource={[...seasonAverage]
@@ -1124,7 +1124,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Worst Ranked Players by Points"
+            header="Season Top Ranked Players by Points"
             key="49"
           >
             <Table
@@ -1136,7 +1136,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Worst Ranked Players by ThreePointers"
+            header="Season Top Ranked Players by ThreePointers"
             key="50"
           >
             <Table
@@ -1148,7 +1148,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Worst Ranked Players by FreeThrowsMade"
+            header="Season Top Ranked Players by FreeThrowsMade"
             key="56"
           >
             <Table
@@ -1160,7 +1160,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Worst Ranked Players by Assists"
+            header="Season Top Ranked Players by Assists"
             key="51"
           >
             <Table
@@ -1172,7 +1172,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Worst Ranked Players by Rebounds"
+            header="Season Top Ranked Players by Rebounds"
             key="52"
           >
             <Table
@@ -1184,7 +1184,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Worst Ranked Players by PersonalFouls"
+            header="Season Top Ranked Players by PersonalFouls"
             key="53"
           >
             <Table
@@ -1196,7 +1196,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Worst Ranked Players by Blocked Shots"
+            header="Season Top Ranked Players by Blocked Shots"
             key="54"
           >
             <Table
@@ -1208,7 +1208,7 @@ const SeasonStats = () => {
             />
           </Collapse.Panel>
           <Collapse.Panel
-            header="Season Worst Ranked Players by Steals"
+            header="Season Top Ranked Players by Steals"
             key="55"
           >
             <Table
