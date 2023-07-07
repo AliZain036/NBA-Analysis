@@ -867,7 +867,7 @@ const SeasonStats = () => {
               loading={loading}
             />
           </Collapse.Panel>
-          <Collapse.Panel header="Minimun" key="25">
+          <Collapse.Panel header="Season Minimum" key="25">
             <Table
               columns={playerSeasonStatsTableColumn}
               dataSource={seasonMinimum}
