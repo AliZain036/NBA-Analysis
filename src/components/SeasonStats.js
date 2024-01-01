@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react"
-import { Input, Button, Spin, Table, Collapse } from "antd"
-import axios from "redaxios"
-import moment from "moment"
+import React, { useEffect, useRef, useState } from "react";
+import { Table, Collapse } from "antd";
+import axios from "redaxios";
 
-const api = "http://54.88.53.54:8080"
-// const api = "http://localhost:8080"
+const api = "http://54.88.53.54:8080";
+// const api = "http://localhost:8080";
 
 const SeasonStats = () => {
   const playerSeasonStatsTableColumn = [
@@ -37,7 +36,7 @@ const SeasonStats = () => {
       key: "GamesCount",
       sorter: (a, b) => a.GamesCount - b.GamesCount,
       render: (GamesCount, record) => {
-        return <p>{GamesCount}</p>
+        return <p>{GamesCount}</p>;
       },
     },
     {
@@ -89,7 +88,7 @@ const SeasonStats = () => {
       key: "Steals",
       sorter: (a, b) => a.Steals - b.Steals,
     },
-  ]
+  ];
   const seasonDefenceVsPositionColumns = [
     // {
     //   title: "Name",
@@ -121,7 +120,7 @@ const SeasonStats = () => {
       key: "GamesCount",
       sorter: (a, b) => a.GamesCount - b.GamesCount,
       render: (GamesCount, record) => {
-        return <p>{GamesCount}</p>
+        return <p>{GamesCount}</p>;
       },
     },
     {
@@ -173,7 +172,7 @@ const SeasonStats = () => {
       key: "Steals",
       sorter: (a, b) => a.Steals - b.Steals,
     },
-  ]
+  ];
   const seasoneVsOpponentColumns = [
     {
       title: "Name",
@@ -210,7 +209,7 @@ const SeasonStats = () => {
       key: "GamesCount",
       sorter: (a, b) => a.GamesCount - b.GamesCount,
       render: (GamesCount, record) => {
-        return <p>{GamesCount}</p>
+        return <p>{GamesCount}</p>;
       },
     },
     {
@@ -262,372 +261,425 @@ const SeasonStats = () => {
       key: "Steals",
       sorter: (a, b) => a.Steals - b.Steals,
     },
-  ]
+  ];
 
-  const [lastTenGamesAverage, setLastTenGamesAverage] = useState([])
-  const [lastTenGamesMinimum, setLastTenGamesMinimum] = useState([])
-  const [lastTenGamesMaximum, setLastTenGamesMaximum] = useState([])
-  const [lastTenGamesMode, setLastTenGamesMode] = useState([])
-  const [lastTenGamesMedian, setLastTenGamesMedian] = useState([])
-  const [lastTenGamesGeoMean, setLastTenGamesGeoMean] = useState([])
-  const [lastTenGamesRange, setLastTenGamesRange] = useState([])
+  const lastTenGamesAverageRef = useRef();
 
-  const [loading, setLoading] = useState(false)
+  const [lastTenGamesAverage, setLastTenGamesAverage] = useState([]);
+  const [lastTenGamesMinStats, setLastTenGamesMinStats] = useState([]);
+  const [lastTenGamesMaxStats, setLastTenGamesMaxStats] = useState([]);
+  const [lastTenGamesMinimum, setLastTenGamesMinimum] = useState([]);
+  const [lastTenGamesMaximum, setLastTenGamesMaximum] = useState([]);
+  const [lastTenGamesMode, setLastTenGamesMode] = useState([]);
+  const [lastTenGamesMedian, setLastTenGamesMedian] = useState([]);
+  const [lastTenGamesGeoMean, setLastTenGamesGeoMean] = useState([]);
+  const [lastTenGamesRange, setLastTenGamesRange] = useState([]);
 
-  const [seasonYear, setSeasonYear] = useState(new Date().getFullYear())
+  const [loading, setLoading] = useState(false);
 
-  const [seasonAverage, setSeasonAverage] = useState([])
+  const [seasonYear, setSeasonYear] = useState(new Date().getFullYear());
+
+  const [seasonAverage, setSeasonAverage] = useState([]);
   const [seasonDefenceVsPositionAverage, setSeasonDefenceVsPositionAverage] =
-    useState([])
+    useState([]);
   const [seasonDefenceVsPositionMode, setSeasonDefenceVsPositionMode] =
-    useState([])
+    useState([]);
   const [seasonDefenceVsPositionMedian, setSeasonDefenceVsPositionMedian] =
-    useState([])
+    useState([]);
   const [seasonDefenceVsPositionGeoMean, setSeasonDefenceVsPositionGeoMean] =
-    useState([])
+    useState([]);
   const [
     seasonLastTenDefenceVsPositionAverage,
     setSeasonLastTenDefenceVsPositionAverage,
-  ] = useState([])
+  ] = useState([]);
   const [
     seasonLastTenDefenceVsPositionMode,
     setSeasonLastTenDefenceVsPositionMode,
-  ] = useState([])
+  ] = useState([]);
   const [
     seasonLastTenDefenceVsPositionMedian,
     setSeasonLastTenDefenceVsPositionMedian,
-  ] = useState([])
+  ] = useState([]);
   const [
     seasonLastTenDefenceVsPositionGeoMean,
     setSeasonLastTenDefenceVsPositionGeoMean,
-  ] = useState([])
-  const [seasonMinimum, setSeasonMinimum] = useState([])
-  const [seasonMaximum, setSeasonMaximum] = useState([])
-  const [seasonMode, setSeasonMode] = useState([])
-  const [seasonMedian, setSeasonMedian] = useState([])
-  const [seasonGeoMean, setSeasonGeoMean] = useState([])
-  const [seasonRange, setSeasonRange] = useState([])
+  ] = useState([]);
+  const [seasonMinimum, setSeasonMinimum] = useState([]);
+  const [seasonMaximum, setSeasonMaximum] = useState([]);
+  const [seasonMode, setSeasonMode] = useState([]);
+  const [seasonMedian, setSeasonMedian] = useState([]);
+  const [seasonGeoMean, setSeasonGeoMean] = useState([]);
+  const [seasonRange, setSeasonRange] = useState([]);
 
-  const [seasonVersusAverage, setSeasonVersusAverage] = useState([])
-  const [seasonVersusMinimum, setSeasonVersusMinimum] = useState([])
-  const [seasonVersusMaximum, setSeasonVersusMaximum] = useState([])
-  const [seasonVersusMode, setSeasonVersusMode] = useState([])
-  const [seasonVersusMedian, setSeasonVersusMedian] = useState([])
-  const [seasonVersusGeoMean, setSeasonVersusGeoMean] = useState([])
-  const [seasonVersusRange, setSeasonVersusRange] = useState([])
+  const [seasonVersusAverage, setSeasonVersusAverage] = useState([]);
+  const [seasonVersusMinimum, setSeasonVersusMinimum] = useState([]);
+  const [seasonVersusMaximum, setSeasonVersusMaximum] = useState([]);
+  const [seasonVersusMode, setSeasonVersusMode] = useState([]);
+  const [seasonVersusMedian, setSeasonVersusMedian] = useState([]);
+  const [seasonVersusGeoMean, setSeasonVersusGeoMean] = useState([]);
+  const [seasonVersusRange, setSeasonVersusRange] = useState([]);
 
   useEffect(() => {
     // Get Last Ten Games Stats Functions
-    getLastTenGamesAverage()
-    getLastTenGamesMode()
-    getLastTenGamesMedian()
-    getLastTenGamesGeoMean()
-    getLastTenGamesMaximum()
-    getLastTenGamesMinimum()
-    getLastTenGamesRange()
+    getLastTenGamesAverage();
+    getLastTenGamesMode();
+    getLastTenGamesMedian();
+    getLastTenGamesGeoMean();
+    getLastTenGamesMaximum();
+    getLastTenGamesMinimum();
+    getLastTenGamesRange();
 
     // getSchedules()
     // getPlayerSeasonStats()
     // fetchPlayerGameData()
     // fetchPlayerSeasonData()
 
-    getSeasonDefenceVsPositionAverage()
-    getSeasonDefenceVsPositionMode()
-    getSeasonDefenceVsPositionMedian()
-    getSeasonDefenceVsPositionGeoMean()
+    getSeasonDefenceVsPositionAverage();
+    getSeasonDefenceVsPositionMode();
+    getSeasonDefenceVsPositionMedian();
+    getSeasonDefenceVsPositionGeoMean();
 
-    getSeasonLastTenDefenceVsPositionAverage()
-    getSeasonLastTenDefenceVsPositionMode()
-    getSeasonLastTenDefenceVsPositionMedian()
-    getSeasonLastTenDefenceVsPositionGeoMean()
+    getSeasonLastTenDefenceVsPositionAverage();
+    getSeasonLastTenDefenceVsPositionMode();
+    getSeasonLastTenDefenceVsPositionMedian();
+    getSeasonLastTenDefenceVsPositionGeoMean();
 
-    getSeasonAverage()
-    getSeasonMinimum()
-    getSeasonMaximum()
-    getSeasonMedian()
-    getSeasonGeoMean()
-    getSeasonMode()
-    getSeasonRange()
+    getSeasonAverage();
+    getSeasonMinimum();
+    getSeasonMaximum();
+    getSeasonMedian();
+    getSeasonGeoMean();
+    getSeasonMode();
+    getSeasonRange();
 
     // Season Versus Stats
-    getSeasonVersusAverage()
-    getSeasonVersusMinimum()
-    getSeasonVersusMaximum()
-    getSeasonVersusMedian()
-    getSeasonVersusGeoMean()
-    getSeasonVersusMode()
-    getSeasonVersusRange()
-  }, [])
+    getSeasonVersusAverage();
+    getSeasonVersusMinimum();
+    getSeasonVersusMaximum();
+    getSeasonVersusMedian();
+    getSeasonVersusGeoMean();
+    getSeasonVersusMode();
+    getSeasonVersusRange();
+    getMinStats();
+    getMaxStats();
+    // if (lastTenGamesAverageRef.current) {
+    //   lastTenGamesAverageRef?.current?.sort("Name", "ascend");
+    // }
+  }, []);
 
   const getLastTenGamesAverage = async () => {
     try {
-      const respone = await axios.get(`${api}/game/last-ten-average`)
-      setLastTenGamesAverage(respone.data.data)
-      console.log(respone.data.data, " === last ten games average")
+      const respone = await axios.get(`${api}/game/last-ten-average`);
+      setLastTenGamesAverage(respone.data.data);
+      console.log(respone.data.data, " === last ten games average");
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
+
+  const getMinStats = async () => {
+    try {
+      const respone = await axios.get(`${api}/game/min-stats`);
+      setLastTenGamesMinStats(respone.data.data);
+      console.log(respone.data.data, " === last ten games min stats");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getMaxStats = async () => {
+    try {
+      const respone = await axios.get(`${api}/game/max-stats`);
+      setLastTenGamesMaxStats(respone.data.data);
+      console.log(respone.data.data, " === last ten games max stats");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const getSeasonDefenceVsPositionAverage = async () => {
     try {
       const respone = await axios.get(
         `${api}/season/defence-vs-position-average`
-      )
-      setSeasonDefenceVsPositionAverage(respone.data.docs)
+      );
+      setSeasonDefenceVsPositionAverage(respone.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getSeasonDefenceVsPositionMode = async () => {
     try {
-      const respone = await axios.get(`${api}/season/defence-vs-position-mode`)
-      setSeasonDefenceVsPositionMode(respone.data.docs)
+      const respone = await axios.get(`${api}/season/defence-vs-position-mode`);
+      setSeasonDefenceVsPositionMode(respone.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getSeasonDefenceVsPositionMedian = async () => {
     try {
       const respone = await axios.get(
         `${api}/season/defence-vs-position-median`
-      )
-      setSeasonDefenceVsPositionMedian(respone.data.docs)
+      );
+      setSeasonDefenceVsPositionMedian(respone.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getSeasonDefenceVsPositionGeoMean = async () => {
     try {
       const respone = await axios.get(
         `${api}/season/defence-vs-position-geomean`
-      )
-      setSeasonDefenceVsPositionGeoMean(respone.data.docs)
+      );
+      setSeasonDefenceVsPositionGeoMean(respone.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const getSeasonLastTenDefenceVsPositionAverage = async () => {
     try {
-      const respone = await axios.get(`${api}/game/last-ten-dvp-average`)
-      setSeasonLastTenDefenceVsPositionAverage(respone.data.data)
+      const respone = await axios.get(`${api}/game/last-ten-dvp-average`);
+      setSeasonLastTenDefenceVsPositionAverage(respone.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getSeasonLastTenDefenceVsPositionMode = async () => {
     try {
-      const respone = await axios.get(`${api}/game/last-ten-dvp-mode`)
-      setSeasonLastTenDefenceVsPositionMode(respone.data.data)
+      const respone = await axios.get(`${api}/game/last-ten-dvp-mode`);
+      setSeasonLastTenDefenceVsPositionMode(respone.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getSeasonLastTenDefenceVsPositionMedian = async () => {
     try {
-      const respone = await axios.get(`${api}/game/last-ten-dvp-median`)
-      setSeasonLastTenDefenceVsPositionGeoMean(respone.data.data)
+      const respone = await axios.get(`${api}/game/last-ten-dvp-median`);
+      setSeasonLastTenDefenceVsPositionGeoMean(respone.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getSeasonLastTenDefenceVsPositionGeoMean = async () => {
     try {
-      const respone = await axios.get(`${api}/game/last-ten-dvp-geomean`)
-      setSeasonLastTenDefenceVsPositionGeoMean(respone.data.data)
+      const respone = await axios.get(`${api}/game/last-ten-dvp-geomean`);
+      setSeasonLastTenDefenceVsPositionGeoMean(respone.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getLastTenGamesMode = async () => {
     try {
-      const respone = await axios.get(`${api}/game/last-ten-mode`)
-      setLastTenGamesMode(respone.data.data)
+      const respone = await axios.get(`${api}/game/last-ten-mode`);
+      setLastTenGamesMode(respone.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getLastTenGamesMedian = async () => {
     try {
-      const respone = await axios.get(`${api}/game/last-ten-median`)
-      setLastTenGamesMedian(respone.data.data)
+      const respone = await axios.get(`${api}/game/last-ten-median`);
+      setLastTenGamesMedian(respone.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getLastTenGamesGeoMean = async () => {
     try {
-      const respone = await axios.get(`${api}/game/last-ten-geomean`)
-      setLastTenGamesGeoMean(respone.data.data)
+      const respone = await axios.get(`${api}/game/last-ten-geomean`);
+      setLastTenGamesGeoMean(respone.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getLastTenGamesMinimum = async () => {
     try {
-      const respone = await axios.get(`${api}/game/last-ten-minimum`)
-      setLastTenGamesMinimum(respone.data.data)
+      const respone = await axios.get(`${api}/game/last-ten-minimum`);
+      setLastTenGamesMinimum(respone.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getLastTenGamesMaximum = async () => {
     try {
-      const respone = await axios.get(`${api}/game/last-ten-maximum`)
-      setLastTenGamesMaximum(respone.data.data)
+      const respone = await axios.get(`${api}/game/last-ten-maximum`);
+      setLastTenGamesMaximum(respone.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getLastTenGamesRange = async () => {
     try {
-      const respone = await axios.get(`${api}/game/last-ten-range`)
-      setLastTenGamesRange(respone.data.data)
+      const respone = await axios.get(`${api}/game/last-ten-range`);
+      setLastTenGamesRange(respone.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getSeasonMedian = async () => {
     try {
-      const response = await axios.get(`${api}/season/median`)
-      setSeasonMedian(response.data.docs)
+      const response = await axios.get(`${api}/season/median`);
+      setSeasonMedian(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const getSeasonMode = async () => {
     try {
-      const response = await axios.get(`${api}/season/mode`)
-      setSeasonMode(response.data.docs)
+      const response = await axios.get(`${api}/season/mode`);
+      setSeasonMode(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const getSeasonAverage = async () => {
     try {
-      const response = await axios.get(`${api}/season/average`)
-      console.log(response.data.docs, "  Season versus average")
-      setSeasonAverage(response.data.docs)
+      const response = await axios.get(`${api}/season/average`);
+      console.log(response.data.docs, "  Season versus average");
+      setSeasonAverage(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getSeasonGeoMean = async () => {
     try {
-      const response = await axios.get(`${api}/season/geoMean`)
-      setSeasonGeoMean(response.data.docs)
+      const response = await axios.get(`${api}/season/geoMean`);
+      setSeasonGeoMean(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const getSeasonMinimum = async () => {
     try {
-      const response = await axios.get(`${api}/season/minimum`)
+      const response = await axios.get(`${api}/season/minimum`);
       // console.log(response.data.docs, "  season minimum")
-      setSeasonMinimum(response.data.docs)
+      setSeasonMinimum(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getSeasonMaximum = async () => {
     try {
-      const response = await axios.get(`${api}/season/maximum`)
-      setSeasonMaximum(response.data.docs)
+      const response = await axios.get(`${api}/season/maximum`);
+      setSeasonMaximum(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const getSeasonRange = async () => {
     try {
-      const response = await axios.get(`${api}/season/range`)
-      setSeasonRange(response.data.docs)
+      const response = await axios.get(`${api}/season/range`);
+      setSeasonRange(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const getSeasonVersusMedian = async () => {
     try {
-      const response = await axios.get(`${api}/season/versus-median`)
-      setSeasonVersusMedian(response.data.docs)
+      const response = await axios.get(`${api}/season/versus-median`);
+      setSeasonVersusMedian(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const getSeasonVersusAverage = async () => {
     try {
-      const response = await axios.get(`${api}/season/versus-average`)
-      setSeasonVersusAverage(response.data.docs)
+      const response = await axios.get(`${api}/season/versus-average`);
+      setSeasonVersusAverage(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const getSeasonVersusMode = async () => {
     try {
-      const response = await axios.get(`${api}/season/versus-mode`)
-      setSeasonVersusMode(response.data.docs)
+      const response = await axios.get(`${api}/season/versus-mode`);
+      setSeasonVersusMode(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const getSeasonVersusGeoMean = async () => {
     try {
-      const response = await axios.get(`${api}/season/versus-geoMean`)
-      setSeasonVersusGeoMean(response.data.docs)
+      const response = await axios.get(`${api}/season/versus-geoMean`);
+      setSeasonVersusGeoMean(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const getSeasonVersusMinimum = async () => {
     try {
-      const response = await axios.get(`${api}/season/versus-minimum`)
-      setSeasonVersusMinimum(response.data.docs)
+      const response = await axios.get(`${api}/season/versus-minimum`);
+      setSeasonVersusMinimum(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const getSeasonVersusMaximum = async () => {
     try {
-      const response = await axios.get(`${api}/season/versus-maximum`)
-      setSeasonVersusMaximum(response.data.docs)
+      const response = await axios.get(`${api}/season/versus-maximum`);
+      setSeasonVersusMaximum(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const getSeasonVersusRange = async () => {
     try {
-      const response = await axios.get(`${api}/season/versus-range`)
-      setSeasonVersusRange(response.data.docs)
+      const response = await axios.get(`${api}/season/versus-range`);
+      setSeasonVersusRange(response.data.docs);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   return (
     <>
       <div className="my-5">
         <Collapse accordion>
-          <Collapse.Panel header="Last Ten Games Average" key="1">
+          <Collapse.Panel
+            header="Quantitative Minimum"
+            key="quantitative minimum"
+            style={{ overflow: "auto !important" }}
+          >
             <Table
               columns={playerSeasonStatsTableColumn}
-              dataSource={lastTenGamesAverage}
+              dataSource={lastTenGamesMinStats}
               loading={loading}
+              ref={lastTenGamesAverageRef}
             />
+          </Collapse.Panel>
+          <Collapse.Panel
+            header="Quantitative Maximum"
+            key="quantitative maximum"
+          >
+            <Table
+              columns={playerSeasonStatsTableColumn}
+              dataSource={lastTenGamesMaxStats}
+              loading={loading}
+              ref={lastTenGamesAverageRef}
+            />
+            <Collapse.Panel header="Last Ten Games Average" key="1">
+              <Table
+                columns={playerSeasonStatsTableColumn}
+                dataSource={lastTenGamesAverage}
+                loading={loading}
+                ref={lastTenGamesAverageRef}
+              />
+            </Collapse.Panel>
           </Collapse.Panel>
           <Collapse.Panel header="Last Ten Games Median" key="2">
             <Table
@@ -1033,7 +1085,10 @@ const SeasonStats = () => {
               loading={loading}
             />
           </Collapse.Panel> */}
-          <Collapse.Panel header="Season Worst Ranked Players by Points" key="41">
+          <Collapse.Panel
+            header="Season Worst Ranked Players by Points"
+            key="41"
+          >
             <Table
               columns={playerSeasonStatsTableColumn}
               dataSource={[...seasonAverage]
@@ -1114,7 +1169,10 @@ const SeasonStats = () => {
               loading={loading}
             />
           </Collapse.Panel>
-          <Collapse.Panel header="Season Worst Ranked Players by Steals" key="48">
+          <Collapse.Panel
+            header="Season Worst Ranked Players by Steals"
+            key="48"
+          >
             <Table
               columns={playerSeasonStatsTableColumn}
               dataSource={[...seasonAverage]
@@ -1123,10 +1181,7 @@ const SeasonStats = () => {
               loading={loading}
             />
           </Collapse.Panel>
-          <Collapse.Panel
-            header="Season Top Ranked Players by Points"
-            key="49"
-          >
+          <Collapse.Panel header="Season Top Ranked Players by Points" key="49">
             <Table
               columns={playerSeasonStatsTableColumn}
               dataSource={[...seasonAverage]
@@ -1207,10 +1262,7 @@ const SeasonStats = () => {
               loading={loading}
             />
           </Collapse.Panel>
-          <Collapse.Panel
-            header="Season Top Ranked Players by Steals"
-            key="55"
-          >
+          <Collapse.Panel header="Season Top Ranked Players by Steals" key="55">
             <Table
               columns={playerSeasonStatsTableColumn}
               dataSource={[...seasonAverage]
@@ -1749,7 +1801,7 @@ const SeasonStats = () => {
         </Collapse>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default SeasonStats
+export default SeasonStats;

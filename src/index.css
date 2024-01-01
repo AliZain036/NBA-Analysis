@@ -17,3 +17,7 @@ code {
   padding: 0;
   box-sizing: border-box;
 }
+
+.ant-collapse-content {
+  overflow: auto !important;
+}
