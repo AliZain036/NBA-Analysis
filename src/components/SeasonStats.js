@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Table, Collapse } from "antd";
+import { Table, Collapse, notification, message } from "antd";
 import axios from "redaxios";
+import { CSVLink } from "react-csv";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 const api = "http://54.88.53.54:8080";
 // const api = "http://localhost:8080";
@@ -87,6 +90,65 @@ const SeasonStats = () => {
       dataIndex: "Steals",
       key: "Steals",
       sorter: (a, b) => a.Steals - b.Steals,
+    },
+  ];
+  const cols = [
+    {
+      header: "Name",
+      field: "Name",
+    },
+    {
+      header: "Team",
+      field: "Team",
+    },
+    {
+      header: "TeamID",
+      field: "TeamID",
+    },
+    {
+      header: "Position",
+      // field: (a, b) => a?.Position?.localeCompare(b?.Position),
+      key: "Position",
+    },
+    {
+      header: "Games Played",
+      field: "GamesCount",
+      // render: (GamesCount, record) => {
+      //   return <p>{GamesCount}</p>;
+      // },
+    },
+    {
+      header: "Points",
+      field: "Points",
+      // render: (points, record) => <p>{points || 0}</p>,
+    },
+    {
+      header: "3 Pointers",
+      field: "ThreePointersMade",
+    },
+    {
+      header: "FT Made",
+      field: "FreeThrowsMade",
+    },
+    {
+      header: "Assists",
+      field: "Assists",
+    },
+    {
+      header: "Rebounds",
+      field: "Rebounds",
+    },
+    {
+      header: "Personal Fouls",
+      field: "PersonalFouls",
+    },
+    {
+      header: "Blocks",
+      field: "BlockedShots",
+    },
+    {
+      header: "Steals",
+      field: "Steals",
     },
   ];
   const seasonDefenceVsPositionColumns = [
@@ -264,6 +326,8 @@ const SeasonStats = () => {
   ];
 
   const lastTenGamesAverageRef = useRef();
+  const dt = useRef();
+  const qmaxdt = useRef();
 
   const [lastTenGamesAverage, setLastTenGamesAverage] = useState([]);
   const [lastTenGamesMinStats, setLastTenGamesMinStats] = useState([]);
@@ -646,9 +710,76 @@ const SeasonStats = () => {
     }
   };
 
+  const loadLatestData = async () => {
+    try {
+      const latestDataResponse = await axios.get(`${api}/load-latest`);
+      // notification.success({
+      //   message: latestDataResponse.data,
+      //   description:
+      //     "Please for a few minutes now for the server to calculate stats. You need to reload after a few minutes to test the latest data. ",
+      // });
+      message.success(latestDataResponse.data)
+      message.success("Please wait for a few minutes now for the server to calculate stats. You need to reload after a few minutes to test the latest data. ")
+    } catch (error) {
+      console.error(error);
+      notification.error({ message: error.message });
+    }
+  };
+
+  const exportCSV = (selectionOnly) => {
+    dt.current.exportCSV({ selectionOnly });
+  };
+
   return (
     <>
       <div className="my-5">
+        <button
+          onClick={() => exportCSV(false)}
+          className="btn btn-primary my-2 mx-3"
+        >
+          Export Quantitative Minimum table
+        </button>
+        <button
+          onClick={() => qmaxdt.current.exportCSV({ selectionOnly: false })}
+          className="btn btn-primary my-2"
+        >
+          Export Quantitative Maximum table
+        </button>
+        <button onClick={loadLatestData} className="btn btn-primary my-2 mx-3">
+          Load Latest Records
+        </button>
+        <div className="d-none">
+          <DataTable
+            ref={dt}
+            value={lastTenGamesMinStats}
+            // header={header}
+            tableStyle={{ minWidth: "50rem" }}
+            showGridlines={true}
+            // paginator={true}
+            // paginator
+            // rowsPerPageOptions={[5, 10, 25, 50]}
+          >
+            {cols.map((col, index) => (
+              <Column key={index} field={col.field} header={col.header} />
+            ))}
+          </DataTable>
+        </div>
+        <div className="d-none">
+          <DataTable
+            ref={qmaxdt}
+            value={lastTenGamesMaxStats}
+            // header={header}
+            tableStyle={{ minWidth: "50rem" }}
+            showGridlines={true}
+            // paginator={true}
+            // paginator
+            // rowsPerPageOptions={[5, 10, 25, 50]}
+          >
+            {cols.map((col, index) => (
+              <Column key={index} field={col.field} header={col.header} />
+            ))}
+          </DataTable>
+        </div>
         <Collapse accordion>
           <Collapse.Panel
             header="Quantitative Minimum"
@@ -672,14 +803,14 @@ const SeasonStats = () => {
               loading={loading}
               ref={lastTenGamesAverageRef}
             />
-            <Collapse.Panel header="Last Ten Games Average" key="1">
-              <Table
-                columns={playerSeasonStatsTableColumn}
-                dataSource={lastTenGamesAverage}
-                loading={loading}
-                ref={lastTenGamesAverageRef}
-              />
-            </Collapse.Panel>
+          </Collapse.Panel>
+          <Collapse.Panel header="Last Ten Games Average" key="1">
+            <Table
+              columns={playerSeasonStatsTableColumn}
+              dataSource={lastTenGamesAverage}
+              loading={loading}
+              ref={lastTenGamesAverageRef}
+            />
           </Collapse.Panel>
           <Collapse.Panel header="Last Ten Games Median" key="2">
             <Table
