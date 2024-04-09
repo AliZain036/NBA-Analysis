@@ -5,9 +5,10 @@ import { CSVLink } from "react-csv";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
-const api = "http://54.88.53.54:8080";
-// const api = "http://localhost:8080";
-
+// const api = "http://54.88.53.54:8080";
+// const api = "http://54.227.50.37:9000";
+const api = "http://54.227.50.37:8000";
+// 
 const SeasonStats = () => {
   const playerSeasonStatsTableColumn = [
     {
