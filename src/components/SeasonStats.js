@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Table, Collapse, notification, message } from "antd";
 import axios from "redaxios";
-import { CSVLink } from "react-csv";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
-// const api = "http://54.88.53.54:8080";
-// const api = "http://54.227.50.37:9000";
-const api = "http://54.227.50.37:8000";
-// 
+// const api = "http://localhost:9000";
+// const api = "https://c93a-54-227-50-37.ngrok-free.app";
+const api = "http://35.172.180.82:9001";
+//
 const SeasonStats = () => {
+  const [refreshed, setRefreshed] = useState(false);
   const playerSeasonStatsTableColumn = [
     {
       title: "Name",
@@ -385,6 +385,13 @@ const SeasonStats = () => {
   const [seasonVersusRange, setSeasonVersusRange] = useState([]);
 
   useEffect(() => {
+    getStats();
+    // if (lastTenGamesAverageRef.current) {
+    //   lastTenGamesAverageRef?.current?.sort("Name", "ascend");
+    // }
+  }, []);
+
+  const getStats = () => {
     // Get Last Ten Games Stats Functions
     getLastTenGamesAverage();
     getLastTenGamesMode();
@@ -427,10 +434,7 @@ const SeasonStats = () => {
     getSeasonVersusRange();
     getMinStats();
     getMaxStats();
-    // if (lastTenGamesAverageRef.current) {
-    //   lastTenGamesAverageRef?.current?.sort("Name", "ascend");
-    // }
-  }, []);
+  };
 
   const getLastTenGamesAverage = async () => {
     try {
@@ -465,7 +469,7 @@ const SeasonStats = () => {
   const getSeasonDefenceVsPositionAverage = async () => {
     try {
       const respone = await axios.get(
-        `${api}/season/defence-vs-position-average`
+        `${api}/season/defence-vs-position-average`,
       );
       setSeasonDefenceVsPositionAverage(respone.data.docs);
     } catch (error) {
@@ -485,7 +489,7 @@ const SeasonStats = () => {
   const getSeasonDefenceVsPositionMedian = async () => {
     try {
       const respone = await axios.get(
-        `${api}/season/defence-vs-position-median`
+        `${api}/season/defence-vs-position-median`,
       );
       setSeasonDefenceVsPositionMedian(respone.data.docs);
     } catch (error) {
@@ -496,7 +500,7 @@ const SeasonStats = () => {
   const getSeasonDefenceVsPositionGeoMean = async () => {
     try {
       const respone = await axios.get(
-        `${api}/season/defence-vs-position-geomean`
+        `${api}/season/defence-vs-position-geomean`,
       );
       setSeasonDefenceVsPositionGeoMean(respone.data.docs);
     } catch (error) {
@@ -714,13 +718,13 @@ const SeasonStats = () => {
   const loadLatestData = async () => {
     try {
       const latestDataResponse = await axios.get(`${api}/load-latest`);
-      // notification.success({
-      //   message: latestDataResponse.data,
-      //   description:
-      //     "Please for a few minutes now for the server to calculate stats. You need to reload after a few minutes to test the latest data. ",
-      // });
-      message.success(latestDataResponse.data)
-      message.success("Please wait for a few minutes now for the server to calculate stats. You need to reload after a few minutes to test the latest data. ")
+      message.success(latestDataResponse.data);
+      message.success(
+        "Please wait for a few minutes now for the server to calculate stats. You need to reload after a few minutes to test the latest data. ",
+      );
+      setTimeout(() => {
+        getStats();
+      }, 600000);
     } catch (error) {
       console.error(error);
       notification.error({ message: error.message });
@@ -746,7 +750,7 @@ const SeasonStats = () => {
         >
           Export Quantitative Maximum table
         </button>
-        <button onClick={loadLatestData} className="btn btn-primary my-2 mx-3">
+        <button onClick={loadLatestData} className="btn btn-info my-2 mx-3">
           Load Latest Records
         </button>
         <div className="d-none">
@@ -983,7 +987,7 @@ const SeasonStats = () => {
               columns={playerSeasonStatsTableColumn}
               dataSource={[...lastTenGamesAverage]
                 .sort(
-                  (a, b) => b.FreeThrowsMadeAverage - a.FreeThrowsMadeAverage
+                  (a, b) => b.FreeThrowsMadeAverage - a.FreeThrowsMadeAverage,
                 )
                 .slice(0, 50)}
               loading={loading}
@@ -1459,7 +1463,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionAverage.filter(
-                (item) => item.Position === "PG"
+                (item) => item.Position === "PG",
               )}
               loading={loading}
             />
@@ -1471,7 +1475,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionAverage.filter(
-                (item) => item.Position === "SG"
+                (item) => item.Position === "SG",
               )}
               loading={loading}
             />
@@ -1483,7 +1487,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionAverage.filter(
-                (item) => item.Position === "SF"
+                (item) => item.Position === "SF",
               )}
               loading={loading}
             />
@@ -1495,7 +1499,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionAverage.filter(
-                (item) => item.Position === "PF"
+                (item) => item.Position === "PF",
               )}
               loading={loading}
             />
@@ -1507,7 +1511,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionAverage.filter(
-                (item) => item.Position === "C"
+                (item) => item.Position === "C",
               )}
               loading={loading}
             />
@@ -1519,7 +1523,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionMode.filter(
-                (item) => item.Position === "PG"
+                (item) => item.Position === "PG",
               )}
               loading={loading}
             />
@@ -1531,7 +1535,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionMode.filter(
-                (item) => item.Position === "SG"
+                (item) => item.Position === "SG",
               )}
               loading={loading}
             />
@@ -1543,7 +1547,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionMode.filter(
-                (item) => item.Position === "SF"
+                (item) => item.Position === "SF",
               )}
               loading={loading}
             />
@@ -1555,7 +1559,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionMode.filter(
-                (item) => item.Position === "PF"
+                (item) => item.Position === "PF",
               )}
               loading={loading}
             />
@@ -1567,7 +1571,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionMode.filter(
-                (item) => item.Position === "C"
+                (item) => item.Position === "C",
               )}
               loading={loading}
             />
@@ -1579,7 +1583,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionMedian.filter(
-                (item) => item.Position === "PG"
+                (item) => item.Position === "PG",
               )}
               loading={loading}
             />
@@ -1591,7 +1595,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionMedian.filter(
-                (item) => item.Position === "SG"
+                (item) => item.Position === "SG",
               )}
               loading={loading}
             />
@@ -1603,7 +1607,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionMedian.filter(
-                (item) => item.Position === "SF"
+                (item) => item.Position === "SF",
               )}
               loading={loading}
             />
@@ -1615,7 +1619,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionMedian.filter(
-                (item) => item.Position === "PF"
+                (item) => item.Position === "PF",
               )}
               loading={loading}
             />
@@ -1637,7 +1641,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "PG"
+                (item) => item.Position === "PG",
               )}
               loading={loading}
             />
@@ -1649,7 +1653,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "SG"
+                (item) => item.Position === "SG",
               )}
               loading={loading}
             />
@@ -1661,7 +1665,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "SF"
+                (item) => item.Position === "SF",
               )}
               loading={loading}
             />
@@ -1673,7 +1677,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "PF"
+                (item) => item.Position === "PF",
               )}
               loading={loading}
             />
@@ -1685,7 +1689,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "C"
+                (item) => item.Position === "C",
               )}
               loading={loading}
             />
@@ -1697,7 +1701,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonLastTenDefenceVsPositionAverage.filter(
-                (item) => item.Position === "PG"
+                (item) => item.Position === "PG",
               )}
               loading={loading}
             />
@@ -1709,7 +1713,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonLastTenDefenceVsPositionAverage.filter(
-                (item) => item.Position === "SG"
+                (item) => item.Position === "SG",
               )}
               loading={loading}
             />
@@ -1721,7 +1725,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonLastTenDefenceVsPositionAverage.filter(
-                (item) => item.Position === "SF"
+                (item) => item.Position === "SF",
               )}
               loading={loading}
             />
@@ -1733,7 +1737,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonLastTenDefenceVsPositionAverage.filter(
-                (item) => item.Position === "PF"
+                (item) => item.Position === "PF",
               )}
               loading={loading}
             />
@@ -1745,7 +1749,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonLastTenDefenceVsPositionAverage.filter(
-                (item) => item.Position === "C"
+                (item) => item.Position === "C",
               )}
               loading={loading}
             />
@@ -1757,7 +1761,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonLastTenDefenceVsPositionMode.filter(
-                (item) => item.Position === "PG"
+                (item) => item.Position === "PG",
               )}
               loading={loading}
             />
@@ -1769,7 +1773,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonLastTenDefenceVsPositionMode.filter(
-                (item) => item.Position === "SG"
+                (item) => item.Position === "SG",
               )}
               loading={loading}
             />
@@ -1781,7 +1785,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonLastTenDefenceVsPositionMode.filter(
-                (item) => item.Position === "SF"
+                (item) => item.Position === "SF",
               )}
               loading={loading}
             />
@@ -1793,7 +1797,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonLastTenDefenceVsPositionMode.filter(
-                (item) => item.Position === "PF"
+                (item) => item.Position === "PF",
               )}
               loading={loading}
             />
@@ -1805,7 +1809,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonLastTenDefenceVsPositionMode.filter(
-                (item) => item.Position === "C"
+                (item) => item.Position === "C",
               )}
               loading={loading}
             />
@@ -1816,8 +1820,8 @@ const SeasonStats = () => {
           >
             <Table
               columns={seasonDefenceVsPositionColumns}
-              dataSource={seasonLastTenDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "PG"
+              dataSource={seasonLastTenDefenceVsPositionMedian.filter(
+                (item) => item.Position === "PG",
               )}
               loading={loading}
             />
@@ -1828,8 +1832,8 @@ const SeasonStats = () => {
           >
             <Table
               columns={seasonDefenceVsPositionColumns}
-              dataSource={seasonLastTenDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "SG"
+              dataSource={seasonLastTenDefenceVsPositionMedian.filter(
+                (item) => item.Position === "SG",
               )}
               loading={loading}
             />
@@ -1840,8 +1844,8 @@ const SeasonStats = () => {
           >
             <Table
               columns={seasonDefenceVsPositionColumns}
-              dataSource={seasonLastTenDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "SF"
+              dataSource={seasonLastTenDefenceVsPositionMedian.filter(
+                (item) => item.Position === "SF",
               )}
               loading={loading}
             />
@@ -1852,8 +1856,8 @@ const SeasonStats = () => {
           >
             <Table
               columns={seasonDefenceVsPositionColumns}
-              dataSource={seasonLastTenDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "PF"
+              dataSource={seasonLastTenDefenceVsPositionMedian.filter(
+                (item) => item.Position === "PF",
               )}
               loading={loading}
             />
@@ -1864,8 +1868,8 @@ const SeasonStats = () => {
           >
             <Table
               columns={seasonDefenceVsPositionColumns}
-              dataSource={seasonLastTenDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "C"
+              dataSource={seasonLastTenDefenceVsPositionMedian.filter(
+                (item) => item.Position === "C",
               )}
               loading={loading}
             />
@@ -1877,7 +1881,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "PG"
+                (item) => item.Position === "PG",
               )}
               loading={loading}
             />
@@ -1889,7 +1893,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "SG"
+                (item) => item.Position === "SG",
               )}
               loading={loading}
             />
@@ -1901,7 +1905,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "SF"
+                (item) => item.Position === "SF",
               )}
               loading={loading}
             />
@@ -1913,7 +1917,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "PF"
+                (item) => item.Position === "PF",
               )}
               loading={loading}
             />
@@ -1925,7 +1929,7 @@ const SeasonStats = () => {
             <Table
               columns={seasonDefenceVsPositionColumns}
               dataSource={seasonDefenceVsPositionGeoMean.filter(
-                (item) => item.Position === "C"
+                (item) => item.Position === "C",
               )}
               loading={loading}
             />
